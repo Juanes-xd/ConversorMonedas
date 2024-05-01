@@ -11,8 +11,6 @@ import java.net.http.HttpRequest;
 import java.net.http.HttpResponse;
 import java.util.Scanner;
 
-// Press Shift twice to open the Search Everywhere dialog and type `show whitespaces`,
-// then press Enter. You can now see whitespace characters in your code.
 public class Main {
     public static void main(String[] args) {
         Scanner scanner = new Scanner(System.in);
@@ -193,11 +191,32 @@ public class Main {
 
         }
 
+    public void getConversion(double coin1, double coin2, double value){
+        String direccion = "https://v6.exchangerate-api.com/v6/da1d0519d56327f4fe61ee50/pair/"+coin1+"/"coin2+"/"+value;
+                HttpClient client = HttpClient.newHttpClient();
+                HttpRequest request = HttpRequest.newBuilder()
+                        .uri(URI.create(direccion))
+                        .build();
+
+                try {
+                    HttpResponse<String> response = client
+                            .send(request, HttpResponse.BodyHandlers.ofString());
+                    String json = response.body();
+                    // System.out.println(json);
+                    Conversion conversion = gson.fromJson(json, Conversion.class);
+                    String resultado = conversion.conversion_result();
+                    System.out.println("El valor "+value+"["+coin1+"] corresponde al valor final de =>>> "+resultado+"["+coin2+"]");
+                } catch (IOException | InterruptedException e) {
+                    throw new RuntimeException(e);
+                }
+    }
+
     }
 }
 /**
  * // Setting URL
- * String url_str = "https://v6.exchangerate-api.com/v6/YOUR-API-KEY/latest/USD";
+ * String url_str =
+ * "https://v6.exchangerate-api.com/v6/YOUR-API-KEY/latest/USD";
  *
  * // Making Request
  * URL url = new URL(url_str);
@@ -206,7 +225,8 @@ public class Main {
  *
  * // Convert to JSON
  * JsonParser jp = new JsonParser();
- * JsonElement root = jp.parse(new InputStreamReader((InputStream) request.getContent()));
+ * JsonElement root = jp.parse(new InputStreamReader((InputStream)
+ * request.getContent()));
  * JsonObject jsonobj = root.getAsJsonObject();
  *
  * // Accessing object
@@ -218,7 +238,7 @@ public class Main {
  *
  *
  * "base_code": "EUR",
- * 	"target_code": "GBP",
- * 	"conversion_rate": 0.8412,
- * 	"conversion_result": 5.8884
+ * "target_code": "GBP",
+ * "conversion_rate": 0.8412,
+ * "conversion_result": 5.8884
  */
